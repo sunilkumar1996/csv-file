@@ -1,33 +1,20 @@
 import pymysql
-import mysql.connector
+# import mysql.connector
 from mysql.connector import Error
+import mysql.connector
 
+#establishing the connection
+conn = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='sunil')
 
-def create_server_connection(host_name, user_name, user_password, db_name):
-    connection = None
-    try:
-        connection = mysql.connector.connect(
-            host=host_name,
-            user=user_name,
-            passwd=user_password,
-            database=db_name
-        )
-        print("MySQL Database connection successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+#Creating a cursor object using the cursor() method
+cursor = conn.cursor()
 
-    return connection
-def execute_query(connection, query):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query, multi=True)
-        connection.commit()
-        print("Query successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+# This is table schema both tables
+sql = '''DROP TABLE IF EXISTS `measurment`; DROP TABLE IF EXISTS `station`; CREATE TABLE `measurment` (`Date Time` DATETIME DEFAULT NULL, NOx real DEFAULT NULL, NO2 real DEFAULT NULL, NO real DEFAULT NULL, SiteID INTEGER DEFAULT NULL, PM10 real DEFAULT NULL, NVPM10 real DEFAULT NULL, VPM10 real DEFAULT NULL, `NVPM2.5` real DEFAULT NULL, `PM2.5` real DEFAULT NULL, `VPM2.5` real DEFAULT NULL, CO real DEFAULT NULL, O3 real DEFAULT NULL, SO2 real DEFAULT NULL, Temperature real DEFAULT NULL, RH real DEFAULT NULL, `Air Pressure` real DEFAULT NULL); CREATE TABLE `station` (SiteID INTEGER DEFAULT NULL, Location VARCHAR(50) DEFAULT NULL, longtitude real DEFAULT NULL, latitude real DEFAULT NULL, DateStart DATETIME DEFAULT NULL, DateEnd DATETIME DEFAULT NULL, Current VARCHAR(45) DEFAULT NULL, `Instrument Type` VARCHAR(45) DEFAULT NULL);'''
 
-measurment = '''DROP TABLE IF EXISTS `measurment`; CREATE TABLE `measurment` (`Date Time` text, NOx real, NO2 real, NO real, SiteID INTEGER, PM10 real, NVPM10 real, VPM10 real, `NVPM2.5` real, `PM2.5` real, `VPM2.5` real, CO real, O3 real, SO2 real, Temperature real, RH real, `Air Pressure` real);'''
-station = '''DROP TABLE IF EXISTS `station`; CREATE TABLE `station` (Location text, longtitude real, latitude real, DateStart text, DateEnd text, Current text, `Instrument Type` text);'''
-connection = create_server_connection("localhost", "root", "root", "working")
-execute_query(connection, measurment)
-execute_query(connection, station)
+# execute the query with values in mysql database alredy created
+cursor.execute(sql)
+print("ok")
+
+#Closing the connection
+conn.close()
